@@ -59,7 +59,7 @@ class NodeFlvSession {
   run() {
     let method = this.req.method;
     let urlInfo = URL.parse(this.req.url, true);
-    let streamPath = urlInfo.pathname.split('.')[0];
+    let streamPath = urlInfo.pathname.split('.')[0].replace('/api/camera', '');
     this.connectCmdObj = { ip: this.ip, method, streamPath, query: urlInfo.query };
     this.connectTime = new Date();
     this.isStarting = true;

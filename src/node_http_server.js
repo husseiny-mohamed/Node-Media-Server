@@ -35,7 +35,7 @@ class NodeHttpServer {
 
     app.use(bodyParser.urlencoded({ extended: true }));
 
-    app.all('*', (req, res, next) => {
+    app.all('/api/camera/*', (req, res, next) => {
       res.header('Access-Control-Allow-Origin', this.config.http.allow_origin);
       res.header('Access-Control-Allow-Headers', 'Content-Type,Content-Length, Authorization, Accept,X-Requested-With');
       res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
@@ -50,18 +50,19 @@ class NodeHttpServer {
 
     let adminEntry = path.join(__dirname + '/public/admin/index.html');
     if (Fs.existsSync(adminEntry)) {
-      app.get('/admin/*', (req, res) => {
+      app.get('/api/camera/admin/*', (req, res) => {
         res.sendFile(adminEntry);
       });
+
     }
 
     if (this.config.http.api !== false) {
       if (this.config.auth && this.config.auth.api) {
-        app.use(['/api/*', '/static/*', '/admin/*'], basicAuth(this.config.auth.api_user, this.config.auth.api_pass));
+        app.use(['/api/camera/*', '/api/camera/static/*', '/api/camera/admin/*'], basicAuth(this.config.auth.api_user, this.config.auth.api_pass));
       }
-      app.use('/api/streams', streamsRoute(context));
-      app.use('/api/server', serverRoute(context));
-      app.use('/api/relay', relayRoute(context));
+      app.use('/api/camera/streams', streamsRoute(context));
+      app.use('/api/camera/server', serverRoute(context));
+      app.use('/api/camera/relay', relayRoute(context));
     }
 
     app.use(Express.static(path.join(__dirname + '/public')));
